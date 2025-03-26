@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../config/prismaClient";
-import { sendError, sendSuccess } from "../utils/responseUtils";
+import { sendError, sendPaginatedSuccess, sendSuccess } from "../utils/responseUtils";
 
 
 export const handleRequestFiles = (req: Request) => {
@@ -38,7 +38,31 @@ export const handleRequestFiles = (req: Request) => {
 //get all todos with user id
 //get just one todo with details by todo id
 
+export const getAllTodosByUserId = async (req: Request, res: Response) => {
+    const user = req.user
+    const page = parseInt(req.params.page) || 1
+    const limit = parseInt(req.params.limit) || 10
 
+    try {
+        const data = await prisma.todo.findMany({
+            where: {
+                userId: user.id
+            },
+            skip: (page - 1) * limit,
+            take: 10
+        })
+        const totalTodoCount = await prisma.todo.count({
+            where: {
+                userId: user.id
+            }
+        })
+        sendPaginatedSuccess(res, data, totalTodoCount, page, limit)
+    } catch (error) {
+        console.log(error),
+            sendError(res, "something went wrong", 500)
+
+    }
+}
 
 export const create = async (req: Request, res: Response) => {
 
