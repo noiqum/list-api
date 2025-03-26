@@ -5,6 +5,7 @@ export interface ApiResponse<T> {
     status: 'success' | 'error';
     data?: T;
     message?: string;
+    statusCode?: number;
 }
 
 export interface PaginatedApiResponse<T> extends ApiResponse<T> {
@@ -20,26 +21,28 @@ export const sendSuccess = <T>(
     res: Response,
     data?: T,
     message?: string,
-    statusCode = 200
+    statusCode?: number
 ): Response => {
     const response: ApiResponse<T> = {
         status: 'success',
         data,
-        message
+        message,
+        statusCode
     };
 
-    return res.status(statusCode).json(response);
+    return res.status(statusCode as number).json(response);
 };
 
 export const sendError = (
     res: Response,
     message: string,
-    statusCode = 500,
+    statusCode: number,
     error?: any
 ): Response => {
     const response: ApiResponse<null> = {
         status: 'error',
         message,
+        statusCode
     };
 
     return res.status(statusCode).json(response);
