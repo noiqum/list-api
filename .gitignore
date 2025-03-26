@@ -13,3 +13,4 @@ node_modules/
 #production
 /dist
 .vercel
+/build
