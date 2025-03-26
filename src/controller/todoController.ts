@@ -33,11 +33,6 @@ export const handleRequestFiles = (req: Request) => {
 }
 
 
-
-//todo
-//get all todos with user id
-//get just one todo with details by todo id
-
 export const getAllTodosByUserId = async (req: Request, res: Response) => {
     const user = req.user
     const page = parseInt(req.params.page) || 1
@@ -64,6 +59,25 @@ export const getAllTodosByUserId = async (req: Request, res: Response) => {
     }
 }
 
+export const getTodoByID = async (req: Request, res: Response) => {
+    const todoID = req.params.id
+    const user = req.user
+    try {
+        const todo = await prisma.todo.findUnique({
+            where: {
+                id: todoID
+            }
+        })
+        if (todo?.userId !== user.id) {
+            sendError(res, "Access Denied. No permission", 403)
+            return
+        }
+        sendSuccess(res, todo, "todo", 200)
+    } catch (error) {
+        console.log(error)
+        sendError(res, "something went wrong", 500)
+    }
+}
 export const create = async (req: Request, res: Response) => {
 
     try {
