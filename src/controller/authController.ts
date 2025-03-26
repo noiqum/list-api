@@ -3,8 +3,11 @@ import * as bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { sendError, sendSuccess } from "../utils/responseUtils";
 import prisma from "../config/prismaClient";
+import { Prisma } from "@prisma/client";
 
-
+const include = {
+    todos: true
+} satisfies Prisma.UserInclude
 
 export const register = async (req: express.Request, res: express.Response) => {
 
@@ -64,10 +67,7 @@ export const login = async (req: express.Request, res: express.Response) => {
 
     const user = await prisma.user.findUnique({
         where: {
-            email
-        },
-        include: {
-            todos: true
+            email: email as string
         }
     })
     if (!user) {

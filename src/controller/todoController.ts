@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../config/prismaClient";
 import { sendError, sendPaginatedSuccess, sendSuccess } from "../utils/responseUtils";
+import getAIreply from "../config/gemini";
 
 
 export const handleRequestFiles = (req: Request) => {
@@ -96,6 +97,7 @@ export const create = async (req: Request, res: Response) => {
         } else {
             const dueDate = new Date(req.body.dueDate)
             const { imageFile, document } = handleRequestFiles(req)
+            const advices = await getAIreply(req.body.content as string)
             const record = await prisma.todo.create({
                 data: {
                     userId: userId as string,
@@ -103,9 +105,11 @@ export const create = async (req: Request, res: Response) => {
                     dueDate,
                     completed: req.body.completed === "false" ? false : true,
                     image: imageFile || null,
-                    file: document || null
+                    file: document || null,
+                    advice: advices as string
                 }
             })
+
             if (record) {
                 sendSuccess(res, record, "todo added", 200)
             } else {
@@ -165,6 +169,10 @@ export const update = async (req: Request, res: Response) => {
         }
         if (document) {
             data.file = document
+        }
+        if (data.content) {
+            const advices = await getAIreply(data.content)
+            data.advice = advices
         }
         const updatedTodo = await prisma.todo.update({
             where: {
