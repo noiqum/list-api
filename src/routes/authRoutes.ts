@@ -6,6 +6,6 @@ const router = Router()
 
 router.post("/register", validateMiddleware(registerSchema), register)
 router.post("/login", validateMiddleware(loginSchema), login)
-router.get("/logout", logout)
+router.post("/logout", logout)
 
 export default router;
