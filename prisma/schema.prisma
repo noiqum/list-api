@@ -18,6 +18,32 @@ model User {
 
 model Todo{
   id String @id @default(auto()) @map("_id") @db.ObjectId
-  userId String @db.ObjectId
+  userId String @unique @db.ObjectId @ignore
   user   User   @relation(fields: [userId], references: [id])
+  content String
+  dueDate DateTime
+  completed Boolean @default(false)
+  tags Tag[]
+  image Image?
+  file File?
 }
+
+type Image{
+  name String
+  filetype String
+  url String
+}
+
+type File{
+  name String
+  filetype String
+  url String
+}
+
+
+type Tag {
+  label String
+  color String
+}
+
+

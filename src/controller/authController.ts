@@ -62,9 +62,12 @@ export const login = async (req: express.Request, res: express.Response) => {
         sendError(res, "email and password is required", 400)
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
         where: {
             email
+        },
+        include: {
+            todos: true
         }
     })
     if (!user) {
@@ -78,11 +81,9 @@ export const login = async (req: express.Request, res: express.Response) => {
                 name: user.name, id: user.id, email: user.email
             }, process.env.JWT_SECRET!, { expiresIn: "1d" })
             res.cookie("token", token)
-            sendSuccess(res, {
-                name: user.name,
-                email: user.email,
-                id: user.id
-            }, "user logged in", 200)
+            const { password, ...rest } = user
+            const passwordOmittedUser = { ...rest }
+            sendSuccess(res, passwordOmittedUser, "user logged in", 200)
         }
     }
 }

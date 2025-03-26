@@ -34,11 +34,12 @@ export const sendSuccess = <T>(
 export const sendError = (
     res: Response,
     message: string,
-    statusCode = 500
+    statusCode = 500,
+    error?: any
 ): Response => {
     const response: ApiResponse<null> = {
         status: 'error',
-        message
+        message,
     };
 
     return res.status(statusCode).json(response);
