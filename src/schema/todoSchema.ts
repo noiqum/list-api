@@ -7,10 +7,7 @@ export const createTodoSchema = z.object({
     content: z.string().min(10, "at least 10 character long"),
     complated: z.boolean(),
     dueDate: z.string(),
-    tags: z.array(z.object({
-        label: z.string(),
-        color: z.string()
-    })).optional(),
+    tag: z.string().optional(),
     image: z.object({
         name: z.string(),
         filetype: z.string(),

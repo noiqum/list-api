@@ -107,7 +107,7 @@ export const create = async (req: Request, res: Response) => {
                     image: imageFile || null,
                     file: document || null,
                     advice: advices as string ?? "",
-                    tags: []
+                    tag: ""
                 }
             })
 
