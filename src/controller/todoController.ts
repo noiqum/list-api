@@ -109,7 +109,8 @@ export const create = async (req: Request, res: Response) => {
                     completed: req.body.completed === "false" ? false : true,
                     image: imageFile || null,
                     file: document || null,
-                    advice: advices as string ?? ""
+                    advice: advices as string ?? "",
+                    tags: []
                 }
             })
 
