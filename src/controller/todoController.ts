@@ -47,9 +47,6 @@ export const getAllTodosByUserId = async (req: Request, res: Response) => {
             },
             skip: (page - 1) * limit,
             take: 10,
-            select: {
-                advice: true
-            }
         })
         const totalTodoCount = await prisma.todo.count({
             where: {
