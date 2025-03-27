@@ -162,7 +162,17 @@ export const update = async (req: Request, res: Response) => {
 
     const todoId = req.params.id as string
     const data = req.body
+    const user = req.user
     try {
+        const todo = await prisma.todo.findUnique({
+            where: {
+                id: todoId
+            }
+        })
+        if (todo?.userId !== user.id) {
+            sendError(res, "No permission", 403)
+            return
+        }
         const { imageFile, document } = handleRequestFiles(req)
         if (imageFile) {
             data.image = imageFile
