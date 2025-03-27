@@ -1,5 +1,5 @@
-import { Router, Request, } from "express"
-import { create, deleteTodo, getAllTodosByUserId, getTodoByID, update } from "../controller/todoController"
+import { Router } from "express"
+import { create, deleteTodo, getAllTodosByUserId, getTodoByID, searchByText, update } from "../controller/todoController"
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import cloudinaryV2 from "../config/cloudinary";
@@ -26,7 +26,7 @@ router.get("/:id", authMiddleware(), getTodoByID)
 router.post("/", authMiddleware(), fileUploadMiddleware.fields([{ name: "image", maxCount: 1 }, { name: "file", maxCount: 1 }]), create)
 router.delete("/:id", authMiddleware(), deleteTodo)
 router.put("/:id", authMiddleware(), fileUploadMiddleware.fields([{ name: "image", maxCount: 1 }, { name: "file", maxCount: 1 }]), update)
-
+router.post("/search", authMiddleware(), searchByText)
 
 
 export default router

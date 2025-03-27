@@ -20,7 +20,7 @@ app.use(cookieParser())
 app.use(
     cors({
         origin: "*",
-        credentials: true
+        credentials: true,
     })
 )
 app.get("/", async (req: Request, res: Response) => {

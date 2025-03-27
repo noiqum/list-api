@@ -202,3 +202,23 @@ export const update = async (req: Request, res: Response) => {
 
 
 }
+
+export const searchByText = async (req: Request, res: Response) => {
+    const data = req.body
+    const user = req.user
+    try {
+        const records = await prisma.todo.findMany({
+            where: {
+                userId: user.id,
+                content: {
+                    contains: data.search,
+                    mode: "insensitive"
+                }
+            },
+
+        })
+        sendSuccess(res, records, "seacrh results", 200)
+    } catch (error) {
+        sendError(res, "could not handle the search", 500, error)
+    }
+}
