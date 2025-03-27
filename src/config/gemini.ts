@@ -4,7 +4,7 @@ const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 })
 
-const getAIreply = async (content: string) => {
+const getAIreply = async (content: string): Promise<string> => {
     try {
         const response = await ai.models.generateContent({
             model: "gemini-2.0-flash",
@@ -14,11 +14,11 @@ const getAIreply = async (content: string) => {
             }
         })
 
-        return response.text
+        return response.text ?? ""
 
     } catch (error) {
         console.error(error)
-        return
+        return ""
     }
 
 }

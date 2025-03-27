@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import prisma from "../config/prismaClient";
 import { sendError, sendPaginatedSuccess, sendSuccess } from "../utils/responseUtils";
 import getAIreply from "../config/gemini";
+import { Prisma, PrismaClient } from "@prisma/client";
 
 
 export const handleRequestFiles = (req: Request) => {
@@ -45,7 +46,10 @@ export const getAllTodosByUserId = async (req: Request, res: Response) => {
                 userId: user.id
             },
             skip: (page - 1) * limit,
-            take: 10
+            take: 10,
+            select: {
+                advice: true
+            }
         })
         const totalTodoCount = await prisma.todo.count({
             where: {
@@ -56,7 +60,6 @@ export const getAllTodosByUserId = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error),
             sendError(res, "something went wrong", 500)
-
     }
 }
 
@@ -106,7 +109,7 @@ export const create = async (req: Request, res: Response) => {
                     completed: req.body.completed === "false" ? false : true,
                     image: imageFile || null,
                     file: document || null,
-                    advice: advices as string
+                    advice: advices as string ?? ""
                 }
             })
 
