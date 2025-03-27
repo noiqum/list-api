@@ -45,10 +45,9 @@ export const register = async (req: express.Request, res: express.Response) => {
                     secure: process.env.Node_ENV === "production",
                     maxAge: 24 * 60 * 60 * 1000
                 })
+                const userData = { name: newUser.name, email: newUser.email, id: newUser.id, token: token }
+                sendSuccess(res, userData, "new user is registered", 201)
             }
-            const userData = { name: newUser.name, email: newUser.email, id: newUser.id }
-            sendSuccess(res, userData, "new user is registered", 201)
-
 
         } catch (error) {
             sendError(res, "something went wrong", 500)
@@ -82,7 +81,7 @@ export const login = async (req: express.Request, res: express.Response) => {
             }, process.env.JWT_SECRET!, { expiresIn: "1d" })
             res.cookie("token", token)
             const { password, ...rest } = user
-            const passwordOmittedUser = { ...rest }
+            const passwordOmittedUser = { ...rest, token }
             sendSuccess(res, passwordOmittedUser, "user logged in", 200)
         }
     }
